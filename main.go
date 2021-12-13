@@ -19,8 +19,11 @@ func main() {
 	nums02 := []int{0, 1, 0, 3, 12}
 	moveZeroes(nums02)
 	fmt.Println(nums02)
+	//  Leetcode 26
+	fmt.Println(removeDuplicates([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
 	println("------------------------------")
-	//  Leetcode
+	//  Leetcode 55
+	fmt.Println(canJump([]int{2, 3, 1, 1, 4}))
 
 }
 
@@ -85,7 +88,7 @@ func lengthOfLongestSubstring(s string) int {
 	return max_count
 }
 
-//  Leetcode 283, Easy ,#1
+//  Leetcode 283, Easy, #1
 func moveZeroes(nums []int) {
 	i := -1
 	for j := 0; j < len(nums); j++ {
@@ -98,4 +101,63 @@ func moveZeroes(nums []int) {
 		}
 	}
 	return
+}
+
+//  Leetcode 26, Easy, #1
+func removeDuplicates(nums []int) int {
+	j := -1
+	for i := 0; i < len(nums); i++ {
+		if j < 0 || nums[i] != nums[i-1] {
+			j++
+			nums[j] = nums[i]
+		}
+	}
+	return j + 1
+}
+
+//  Version that looks longer but faster
+//func removeDuplicates(nums []int) int {
+//	n := len(nums)
+//	if n == 0{
+//		return 0
+//	}
+//	j := 0
+//	for i := 1; i < len(nums); i++ {
+//		if nums[i] != nums[i - 1]{
+//			j++
+//			nums[j] = nums[i]
+//		}
+//	}
+//	return j + 1
+//}
+
+//  leetcode 55
+func canJump(nums []int) bool {
+
+	memo := make([]interface{}, len(nums)) //定义长度的slice！
+	memo[0] = true
+
+	return _canJump(nums, memo)
+
+}
+
+func _canJump(nums []int, memo []interface{}) bool {
+	n := len(nums)
+
+	//  等号右侧是check interface memo[n - 1]是否是bool型；
+	//  等号左边ans表示把 memo[n - 1]转化为bool后的值；
+	//  ok表示memo[n - 1]是否为bool型。
+	if ans, ok := memo[n-1].(bool); ok {
+		return ans
+	}
+	for i := 0; i < n-1; i++ {
+		if i+nums[i] >= n-1 {
+			if _canJump(nums[:i+1], memo) {
+				memo[n-1] = true
+				return true
+			}
+		}
+	}
+	memo[n-1] = false
+	return false
 }
