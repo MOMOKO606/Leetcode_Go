@@ -21,9 +21,9 @@ func main() {
 	fmt.Println(nums02)
 	//  Leetcode 26
 	fmt.Println(removeDuplicates([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
-	println("------------------------------")
 	//  Leetcode 55
-	fmt.Println(canJump([]int{2, 3, 1, 1, 4}))
+	println("------------------------------")
+	fmt.Println(canJump([]int{3, 2, 1, 0, 4}))
 
 }
 
@@ -132,32 +132,68 @@ func removeDuplicates(nums []int) int {
 //}
 
 //  leetcode 55
+
+////  The recursive version with a memo.
+//func canJump(nums []int) bool {
+//
+//	memo := make([]interface{}, len(nums)) //定义长度的slice！
+//	memo[0] = true
+//
+//	return _canJump(nums, memo)
+//
+//}
+//
+//func _canJump(nums []int, memo []interface{}) bool {
+//	n := len(nums)
+//
+//	//  等号右侧是check interface memo[n - 1]是否是bool型；
+//	//  等号左边ans表示把 memo[n - 1]转化为bool后的值；
+//	//  ok表示memo[n - 1]是否为bool型。
+//	if ans, ok := memo[n-1].(bool); ok {
+//		return ans
+//	}
+//	for i := 0; i < n-1; i++ {
+//		if i + nums[i] >= n-1 {
+//			if _canJump(nums[:i+1], memo) {
+//				memo[n-1] = true
+//				return true
+//			}
+//		}
+//	}
+//	memo[n-1] = false
+//	return false
+//}
+
+////  The iterative version with a memo.
+//func canJump( nums []int ) bool{
+//	n := len(nums)
+//	memo := make([]bool, n)
+//	memo[0] = true
+//	for i:= 1; i < n; i++{
+//		for j:= 0; j < i; j++{
+//			if nums[j] + j >= i && memo[j]{
+//				memo[i] = true
+//				break
+//			}
+//		}
+//		if memo[i] != true{
+//			memo[i] = false}
+//	}
+//	return memo[n - 1]
+//}
+
+//  The greedy version.
 func canJump(nums []int) bool {
-
-	memo := make([]interface{}, len(nums)) //定义长度的slice！
-	memo[0] = true
-
-	return _canJump(nums, memo)
-
-}
-
-func _canJump(nums []int, memo []interface{}) bool {
+	reach := 0
 	n := len(nums)
-
-	//  等号右侧是check interface memo[n - 1]是否是bool型；
-	//  等号左边ans表示把 memo[n - 1]转化为bool后的值；
-	//  ok表示memo[n - 1]是否为bool型。
-	if ans, ok := memo[n-1].(bool); ok {
-		return ans
-	}
-	for i := 0; i < n-1; i++ {
-		if i+nums[i] >= n-1 {
-			if _canJump(nums[:i+1], memo) {
-				memo[n-1] = true
-				return true
-			}
+	for i := 0; i < n; i++ {
+		if i > reach {
+			return false
 		}
+		if reach >= n-1 {
+			return true
+		}
+		reach = max(reach, i+nums[i])
 	}
-	memo[n-1] = false
-	return false
+	return true
 }
