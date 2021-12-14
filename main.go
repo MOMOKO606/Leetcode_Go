@@ -22,8 +22,10 @@ func main() {
 	//  Leetcode 26
 	fmt.Println(removeDuplicates([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
 	//  Leetcode 55
-	println("------------------------------")
 	fmt.Println(canJump([]int{3, 2, 1, 0, 4}))
+	//  Leetcode 62
+	println("------------------------------")
+	fmt.Println(uniquePaths(3, 7))
 
 }
 
@@ -132,7 +134,6 @@ func removeDuplicates(nums []int) int {
 //}
 
 //  leetcode 55
-
 ////  The recursive version with a memo.
 //func canJump(nums []int) bool {
 //
@@ -196,4 +197,43 @@ func canJump(nums []int) bool {
 		reach = max(reach, i+nums[i])
 	}
 	return true
+}
+
+//  Leetcode 62
+//func uniquePaths(m int, n int) int {
+//
+//	// Initialize a 2-D array!
+//	memo := make([][]int, m)
+//	for i := range memo {
+//		memo[i] = make([]int, n)
+//	}
+//
+//	for j := 0; j < n; j++ {
+//		memo[0][j] = 1
+//	}
+//
+//	for i := 0; i < m; i++ {
+//		memo[i][0] = 1
+//	}
+//
+//	for i := 1; i < m; i++ {
+//		for j := 1; j < n; j++ {
+//			memo[i][j] = memo[i - 1][j] + memo[i][j - 1]
+//		}
+//	}
+//	return memo[m - 1][n - 1]
+//}
+
+func uniquePaths(m int, n int) int {
+	// initialize the memo
+	memo := make([]int, n)
+	for j := 0; j < n; j++ {
+		memo[j] = 1
+	}
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			memo[j] += memo[j-1]
+		}
+	}
+	return memo[n-1]
 }
