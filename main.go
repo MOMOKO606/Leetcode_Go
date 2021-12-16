@@ -24,8 +24,10 @@ func main() {
 	//  Leetcode 55
 	fmt.Println(canJump([]int{3, 2, 1, 0, 4}))
 	//  Leetcode 62
-	println("------------------------------")
 	fmt.Println(uniquePaths(3, 7))
+	//  Leetcaode 66
+	println("------------------------------")
+	fmt.Println(plusOne([]int{9}))
 
 }
 
@@ -236,4 +238,29 @@ func uniquePaths(m int, n int) int {
 		}
 	}
 	return memo[n-1]
+}
+
+//  Leetcode 66
+//  The recursive version.
+//func plusOne( digits []int) []int{
+//	n := len(digits)
+//	if n == 0{
+//		return []int{1}
+//	}
+//	if digits[n - 1] < 9{
+//		digits[n - 1] += 1
+//		return digits
+//	}
+//	return append(plusOne(digits[:n-1]), 0)
+//}
+
+func plusOne(digits []int) []int {
+	for i := len(digits) - 1; i >= 0; i-- {
+		if digits[i]+1 < 10 {
+			digits[i] += 1
+			return digits
+		}
+		digits[i] = 0
+	}
+	return append([]int{1}, digits...)
 }
