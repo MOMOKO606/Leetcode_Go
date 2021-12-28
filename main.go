@@ -26,9 +26,11 @@ func main() {
 	//  Leetcode 62
 	fmt.Println(uniquePaths(3, 7))
 	//  Leetcaode 66
-	println("------------------------------")
 	fmt.Println(plusOne([]int{9}))
-
+	//  Leetcode 84
+	println("------------------------------")
+	fmt.Println(largestRectangleArea([]int{2, 1, 5, 6, 2, 3}))
+	fmt.Println(largestRectangleArea([]int{2, 4}))
 }
 
 //  Leetcode 1. Two Sum(Easy), #1
@@ -136,6 +138,22 @@ func removeDuplicates(nums []int) int {
 //}
 
 //  leetcode 55
+//  The greedy version.
+func canJump(nums []int) bool {
+	reach := 0
+	n := len(nums)
+	for i := 0; i < n; i++ {
+		if i > reach {
+			return false
+		}
+		if reach >= n-1 {
+			return true
+		}
+		reach = max(reach, i+nums[i])
+	}
+	return true
+}
+
 ////  The recursive version with a memo.
 //func canJump(nums []int) bool {
 //
@@ -185,23 +203,21 @@ func removeDuplicates(nums []int) int {
 //	return memo[n - 1]
 //}
 
-//  The greedy version.
-func canJump(nums []int) bool {
-	reach := 0
-	n := len(nums)
-	for i := 0; i < n; i++ {
-		if i > reach {
-			return false
-		}
-		if reach >= n-1 {
-			return true
-		}
-		reach = max(reach, i+nums[i])
+//  Leetcode 62
+func uniquePaths(m int, n int) int {
+	// initialize the memo
+	memo := make([]int, n)
+	for j := 0; j < n; j++ {
+		memo[j] = 1
 	}
-	return true
+	for i := 1; i < m; i++ {
+		for j := 1; j < n; j++ {
+			memo[j] += memo[j-1]
+		}
+	}
+	return memo[n-1]
 }
 
-//  Leetcode 62
 //func uniquePaths(m int, n int) int {
 //
 //	// Initialize a 2-D array!
@@ -226,21 +242,18 @@ func canJump(nums []int) bool {
 //	return memo[m - 1][n - 1]
 //}
 
-func uniquePaths(m int, n int) int {
-	// initialize the memo
-	memo := make([]int, n)
-	for j := 0; j < n; j++ {
-		memo[j] = 1
-	}
-	for i := 1; i < m; i++ {
-		for j := 1; j < n; j++ {
-			memo[j] += memo[j-1]
+//  Leetcode 66
+func plusOne(digits []int) []int {
+	for i := len(digits) - 1; i >= 0; i-- {
+		if digits[i]+1 < 10 {
+			digits[i] += 1
+			return digits
 		}
+		digits[i] = 0
 	}
-	return memo[n-1]
+	return append([]int{1}, digits...)
 }
 
-//  Leetcode 66
 //  The recursive version.
 //func plusOne( digits []int) []int{
 //	n := len(digits)
@@ -254,13 +267,65 @@ func uniquePaths(m int, n int) int {
 //	return append(plusOne(digits[:n-1]), 0)
 //}
 
-func plusOne(digits []int) []int {
-	for i := len(digits) - 1; i >= 0; i-- {
-		if digits[i]+1 < 10 {
-			digits[i] += 1
-			return digits
+//  Leetcode 84
+//  The fast version.
+func largestRectangleArea(heights []int) int {
+	i, count, max_area := 0, 0, 0
+	//  Using a stack.
+	var stack []int
+	stack = append(stack, -1)
+	for count < len(heights) {
+		if len(stack) == 1 || i < len(heights) && heights[i] >= heights[stack[len(stack)-1]] {
+			stack = append(stack, i)
+			i++
+		} else {
+			//  Pop the top element from the stack.
+			height := heights[stack[len(stack)-1]]
+			stack = stack[:len(stack)-1]
+			max_area = max(max_area, height*(i-stack[len(stack)-1]-1))
+			count++
 		}
-		digits[i] = 0
 	}
-	return append([]int{1}, digits...)
+	return max_area
 }
+
+////  The optimized algorithm with a stack, easier to read.
+//func largestRectangleArea( heights []int ) int {
+//	i, count, stackTop, max_area, n := 0, 0, 0, 0, len(heights)
+//	//  Using a stack.
+//	var stack [][]int
+//	//  Represents the boundary where index is - 1 and value is -1 as well.
+//	stack = append(stack, []int{-1, -1})
+//	for count < n{
+//		if i < n && heights[i] >= stack[stackTop][1]{
+//			stack = append(stack, []int{i, heights[i]})
+//			stackTop++
+//			i++
+//		}else{
+//			//  Pop the top element from the stack.
+//			height := stack[stackTop][1]
+//			stack = stack[:stackTop]
+//			stackTop--
+//			max_area = max(max_area, height * (i - stack[stackTop][0] - 1))
+//			count++
+//		}
+//	}
+//	return max_area
+//}
+
+////  The brute-force version.
+//func largestRectangleArea(heights []int) int {
+//	max_area := 0
+//	for i := 0; i < len(heights); i++ {
+//		l := i - 1
+//		r := i + 1
+//		for l >= 0 && heights[l] >= heights[i] {
+//			l--
+//		}
+//		for r < len(heights) && heights[r] >= heights[i] {
+//			r++
+//		}
+//		max_area = max(max_area, heights[i]*(r-l-1))
+//	}
+//	return max_area
+//}
